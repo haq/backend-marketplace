@@ -5,19 +5,10 @@ namespace App\Http\Controllers\Auth;
 use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 class AuthController extends Controller
 {
-    /**
-     * Create a new AuthController instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth:api')->except('login');
-    }
-
     /**
      * Get a JWT via given credentials.
      *
@@ -26,43 +17,23 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'email' => 'required',
+            'email' => 'required|string|email|max:255',
             'password' => 'required',
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'Bad Request', 'status' => 400], 400);
         }
 
-        $credential = [
-            'email' => $request->input('email'),
-            'password' => $request->input('password'),
-        ];
-        if (!$token = auth('api')->attempt($credential)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+        $credentials = $request->only('email', 'password');
+        try {
+            if (!$token = auth('api')->attempt($credentials)) {
+                return response()->json(['error' => 'Unauthorized', 'status' => 401], 401);
+            }
+        } catch (JWTException $e) {
+            return response()->json(['error' => 'Internal Server Error', 'status' => 500], 500);
         }
         return $this->respondWithToken($token);
-    }
-
-    /**
-     * Log the user out (Invalidate the token).
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function logout(Request $request)
-    {
-        auth('api')->logout();
-        return response()->json(['message' => 'Successfully logged out']);
-    }
-
-    /**
-     * Refresh a token.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function refresh(Request $request)
-    {
-        return $this->respondWithToken(auth('api')->refresh());
     }
 
     /**

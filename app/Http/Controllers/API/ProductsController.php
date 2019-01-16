@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\API;
 
+use Validator;
 use App\Http\Controllers\Controller;
 use App\Product;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ProductsController extends Controller
 {
@@ -25,39 +27,38 @@ class ProductsController extends Controller
      */
     public function index(Request $request)
     {
-        $paginate = 10;
-        if (isset($request->paginate)) {
-            $paginate = $request->paginate;
+
+        $validator = Validator::make($request->all(), [
+            'available' => 'nullable',
+            'paginate' => 'nullable|int',
+        ]);
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
         }
-        if (isset($request->available)) {
+
+        $paginate = 10;
+        if ($request->has('paginate')) {
+            $paginate = $request->input('paginate');
+        }
+        if ($request->has('available')) {
              return response(Product::where('inventory_count', '>', 0)->paginate($paginate));
         } else {
-            return response(Product::paginate($paginate));
+            return Product::paginate($paginate);
         }
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Display the specified resource.  
      *
-     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function show(int $id)
     {
-        //
-
-
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Product $product
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Product $product)
-    {
-        //
+        try { 
+            return Product::findOrFail($id);
+        } catch(ModelNotFoundException $e){
+            return response()->json(['error' => 'Not Found', 'status' => 404], 404);
+        }
     }
 
     /**
@@ -68,17 +69,6 @@ class ProductsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Product $product)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Product $product
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Product $product)
     {
         //
     }

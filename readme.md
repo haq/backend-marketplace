@@ -11,14 +11,13 @@ A barebones backend of an online marketplace done for a internship challenge for
 
 ### Authentication
 
-#### Login
 ```http
-POST /api/auth/login
+POST /api/auth
 ```
 | Key | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `email` | `string` | Your account email. | `test@test.com` |
-| `password` | `string` | Your account password. | `test` |
+| `email` | `required|string|email|max:255` | Your account email. | `test@test.com` |
+| `password` | `required|string` | Your account password. | `test` |
 
 ##### Responses
 
@@ -39,76 +38,14 @@ POST /api/auth/login
 ###### Fail
 ```json
 {
-    "error": "Unauthorized"
+    "error": "Unauthorized",
+    "status": 401
 }
 ```
 | Key | Type | Description |
 | :--- | :--- | :--- |
-| `error` | `string` | Access denied message. |
-
-#### Refresh
-```http
-POST /api/auth/refresh
-```
-| Parameter | Type | Description |
-| :--- | :--- | :--- |
-| `token` | `string` | Your access token. |
-
-##### Responses
-
-###### Success
-```json
-{
-    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L2JhY2tlbmQvcHVibGljL2FwaS9hdXRoL2xvZ2luIiwiaWF0IjoxNTQ3NjAwODI1LCJleHAiOjE1NDc2MDQ0MjUsIm5iZiI6MTU0NzYwMDgyNSwianRpIjoiWUxrYXR2RjFlMEdLVExLUiIsInN1YiI6MSwicHJ2IjoiODdlMGFmMWVmOWZkMTU4MTJmZGVjOTcxNTNhMTRlMGIwNDc1NDZhYSJ9.7GmAc12UE-gaZUUMNglsXlH7MyRwkGnRoetnktlEkpY",
-    "token_type": "bearer",
-    "expires_in": 3600
-}
-```
-| Key | Type | Description |
-| :--- | :--- | :--- |
-| `token` | `string` | Your refreshed auth token. |
-| `token_type` | `string` | The generated token type. |
-| `expires_in` | `int` | The amount of seconds it will take the token to expire. |
-
-###### Fail
-```json
-{
-    "error": "Unauthorized"
-}
-```
-| Key | Type | Description |
-| :--- | :--- | :--- |
-| `error` | `string` | Access denied message. |
-
-#### Logout
-```http
-POST /api/auth/logout
-```
-| Key | Type | Description |
-| :--- | :--- | :--- |
-| `token` | `string` | Your access token. |
-
-##### Responses
-
-###### Success
-```json
-{
-    "message": "Successfully logged out"
-}
-```
-| Key | Type | Description |
-| :--- | :--- | :--- |
-| `message` | `string` | Logout message. |
-
-###### Fail
-```json
-{
-    "error": "Unauthorized"
-}
-```
-| Key | Type | Description |
-| :--- | :--- | :--- |
-| `error` | `string` | Access denied message. |
+| `error` | `string` | Access status message. |
+| `status` | `int` | The status code. |
 
 ### Products
 
@@ -118,9 +55,11 @@ GET /api/products
 ```
 | Parameter | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `token` | `string` | Your auth token. |  |
-| `available` | `null` | Whether you want to exclude empty products. |  |
-| `paginate` | `int` | How many products you want to list per page. | `10` |
+| `token` | `required|string` | Your auth token. |  |
+| `page` | `nullable|int` | What page number you want. | `1` |
+| `paginate` | `nullable|int` | How many products you want to list per page. | `10` |
+| `available` | `nullable` | Whether you want to exclude empty products. |  |
+
 
 ##### Responses
 
@@ -208,67 +147,95 @@ GET /api/products
             "inventory_count": 7,
             "created_at": "2019-01-16 03:15:58",
             "updated_at": "2019-01-16 03:15:58"
-        },
-        {
-            "id": 11,
-            "title": "qui",
-            "price": 727542,
-            "inventory_count": 4,
-            "created_at": "2019-01-16 03:15:58",
-            "updated_at": "2019-01-16 03:15:58"
-        },
-        {
-            "id": 12,
-            "title": "est",
-            "price": 978956,
-            "inventory_count": 9,
-            "created_at": "2019-01-16 03:15:58",
-            "updated_at": "2019-01-16 03:15:58"
-        },
-        {
-            "id": 13,
-            "title": "consectetur",
-            "price": 375887,
-            "inventory_count": 1,
-            "created_at": "2019-01-16 03:15:58",
-            "updated_at": "2019-01-16 03:15:58"
-        },
-        {
-            "id": 14,
-            "title": "cupiditate",
-            "price": 422336,
-            "inventory_count": 7,
-            "created_at": "2019-01-16 03:15:58",
-            "updated_at": "2019-01-16 03:15:58"
-        },
-        {
-            "id": 15,
-            "title": "aut",
-            "price": 930778,
-            "inventory_count": 5,
-            "created_at": "2019-01-16 03:15:58",
-            "updated_at": "2019-01-16 03:15:58"
         }
     ],
     "first_page_url": "http://localhost:8000/api/products?page=1",
     "from": 1,
-    "last_page": 1,
-    "last_page_url": "http://localhost:8000/api/products?page=1",
-    "next_page_url": null,
+    "last_page": 2,
+    "last_page_url": "http://localhost:8000/api/products?page=2",
+    "next_page_url": "http://localhost:8000/api/products?page=2",
     "path": "http://localhost:8000/api/products",
-    "per_page": "100",
+    "per_page": 10,
     "prev_page_url": null,
-    "to": 15,
+    "to": 10,
     "total": 15
-}
-```
-
-###### Fail
-```json
-{
-    "error": "Unauthorized"
 }
 ```
 | Key | Type | Description |
 | :--- | :--- | :--- |
-| `error` | `string` | Access denied message. |
+| `current_page` | `int` | Your current page. |
+| `data` | `array` | Holds all the product objects. |
+| `first_page_url` | `string|url` | The URL of the first page. |
+| `from` | `int` | From what product id does this page display form. |
+| `last_page` | `int` | The last page number that holds data. |
+| `last_page_url` | `nullable|string|url` | The URL of the last page. |
+| `next_page_url` | `nullable|string|url` | The URL of the next page. |
+| `path` | `string|url` | The API URL. |
+| `per_page` | `int` | The number of products per page. |
+| `prev_page_url` | `nullable|string|url` | The URL of the previous page. |
+| `to` | `int` | Up to what product id is displayed on this page. |
+| `total` | `int` | The total number of products on all pages. |
+
+###### Fail
+```json
+{
+    "error": "Unauthorized",
+    "status": 401
+}
+```
+| Key | Type | Description |
+| :--- | :--- | :--- |
+| `error` | `string` | Access status message. |
+| `status` | `int` | The status code. |
+
+
+#### Single Product
+
+```http
+POST /api/products/{id}/
+```
+| Key | Type | Description |
+| :--- | :--- | :--- |
+| `id` | `'required|int'` | The ID of the product you want to get. |
+| `token` | `required|string` | Your auth token. |
+
+##### Responses
+
+###### Success
+```json
+{
+    "id": 2,
+    "title": "ipsam",
+    "price": 751727,
+    "inventory_count": 8,
+    "created_at": "2019-01-16 03:15:58",
+    "updated_at": "2019-01-16 03:15:58"
+}
+```
+| Key | Type | Description |
+| :--- | :--- | :--- |
+| `id` | `int` | THe product id. |
+| `title` | `string` | The product title. |
+| `price` | `float` | The product price.|
+| `inventory_count` | `int` | The inventory count of the product.|
+| `created_at` | `string|date` | The date the product was added to inventory. |
+| `updated_at` | `string|date` | THe date the product was last updated..|
+
+###### Fail
+```json
+{
+    "error": "Not Found",
+    "status": 404
+}
+```
+OR
+```json
+{
+    "error": "Unauthorized",
+    "status": 401
+}
+``` 
+| Key | Type | Description |
+| :--- | :--- | :--- |
+| `error` | `string` | Access status message. |
+| `status` | `int` | The status code. |

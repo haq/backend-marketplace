@@ -11,10 +11,6 @@
 |
 */
 
-Route::apiResource('products', 'API\ProductsController')->except('store', 'update', 'destroy');
+Route::apiResource('products', 'API\ProductsController')->except('store', 'destroy');
 
-Route::group(['prefix' => 'auth'], function () {
-    Route::post('login', 'Auth\AuthController@login');
-    Route::post('logout', 'Auth\AuthController@logout');
-    Route::post('refresh', 'Auth\AuthController@refresh');
-});
+Route::post('auth', 'Auth\AuthController@login')->name('auth');
