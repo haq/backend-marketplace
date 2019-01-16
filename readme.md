@@ -2,8 +2,8 @@
 A barebones backend of an online marketplace done for a internship challenge for Shopify.
 
 ## Libraries
-- Laravel - Framework used for backend. Would use Vue.js for frontend.
-- jwt-auth - Used for JWT based API authentication.
+- [Laravel](https://github.com/laravel/laravel) - Framework used for backend. Would use Vue.js for frontend.
+- [jwt-auth](https://github.com/tymondesigns/jwt-auth) - Used for JWT based API authentication.
 
 ## API
 
