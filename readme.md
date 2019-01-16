@@ -18,8 +18,8 @@ POST /api/auth/login
 ```
 | Key | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `email` | `string` | Your account email. | test@test.com |
-| `password` | `string` | Your account password. | test |
+| `email` | `string` | Your account email. | `test@test.com` |
+| `password` | `string` | Your account password. | `test` |
 
 ##### Responses
 

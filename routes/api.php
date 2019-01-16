@@ -11,7 +11,7 @@
 |
 */
 
-Route::apiResource('products', 'API\ProductsController');
+Route::apiResource('products', 'API\ProductsController')->except('store', 'update', 'destroy');
 
 Route::group(['prefix' => 'auth'], function () {
     Route::post('login', 'Auth\AuthController@login');
