@@ -38,14 +38,12 @@ POST /api/auth
 ###### Fail
 ```json
 {
-    "error": "Unauthorized",
-    "status": 401
+    "error": "Unauthorized"
 }
 ```
 | Key | Type | Description |
 | :--- | :--- | :--- |
 | `error` | `string` | Access status message. |
-| `status` | `int` | The status code. |
 
 ### Products
 
@@ -188,7 +186,6 @@ GET /api/products
 | `error` | `string` | Access status message. |
 | `status` | `int` | The status code. |
 
-
 #### Single Product
 
 ```http
@@ -224,18 +221,97 @@ GET /api/products/{id}/
 ###### Fail
 ```json
 {
-    "error": "Not Found",
-    "status": 404
+    "error": "Not Found"
 }
 ```
 OR
 ```json
 {
-    "error": "Unauthorized",
-    "status": 401
+    "error": "Unauthorized"
 }
 ``` 
 | Key | Type | Description |
 | :--- | :--- | :--- |
 | `error` | `string` | Access status message. |
-| `status` | `int` | The status code. |
+
+##### Responses
+
+###### Success
+```json
+{
+    "id": 2,
+    "title": "ipsam",
+    "price": 751727,
+    "inventory_count": 8,
+    "created_at": "2019-01-16 03:15:58",
+    "updated_at": "2019-01-16 03:15:58"
+}
+```
+| Key | Type | Description |
+| :--- | :--- | :--- |
+| `id` | `int` | The product id. |
+| `title` | `string` | The product title. |
+| `price` | `float` | The product price.|
+| `inventory_count` | `int` | The inventory count of the product.|
+| `created_at` | `string` `date` | The date the product was added to inventory. |
+| `updated_at` | `string` `date` | THe date the product was last updated..|
+
+###### Fail
+```json
+{
+    "error": "Not Found"
+}
+```
+OR
+```json
+{
+    "error": "Unauthorized"
+}
+``` 
+| Key | Type | Description |
+| :--- | :--- | :--- |
+| `error` | `string` | Access status message. |
+
+#### Purchase Product
+
+```http
+PATCH /api/products/{id}/purchase
+```
+| Key | Type | Description |
+| :--- | :--- | :--- |
+| `id` | `required` `int` | The ID of the product you want to get. |
+| `token` | `required` `string` | Your auth token. |
+
+##### Responses
+
+###### Success
+```json
+{
+    "message": "Product is out of stock"
+}
+```
+OR 
+```json
+{
+    "message": "Product purchased"
+}
+```
+| Key | Type | Description |
+| :--- | :--- | :--- |
+| `message` | `string` | The response. |
+
+###### Fail
+```json
+{
+    "error": "Not Found"
+}
+```
+OR
+```json
+{
+    "error": "Unauthorized"
+}
+``` 
+| Key | Type | Description |
+| :--- | :--- | :--- |
+| `error` | `string` | Access status message. |

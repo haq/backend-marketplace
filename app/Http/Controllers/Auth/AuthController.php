@@ -21,12 +21,12 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
         if ($validator->fails()) {
-            return response()->json(['error' => 'Bad Request', 'status' => 400], 400);
+            return response()->json(['error' => 'Bad Request'], 400);
         }
 
         $credentials = $request->only(['email', 'password']);
         if (!$token = auth('api')->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized', 'status' => 401], 401);
+            return response()->json(['error' => 'Unauthorized'], 401);
         }
         return $this->respondWithToken($token);
     }

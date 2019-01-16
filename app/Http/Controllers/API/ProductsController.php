@@ -32,7 +32,7 @@ class ProductsController extends Controller
             'paginate' => 'nullable|int',
         ]);
         if ($validator->fails()) {
-            return response()->json($validator->errors());
+            return response()->json(['error' => 'Bad Request'], 400);
         }
 
         $paginate = 10;
@@ -40,7 +40,7 @@ class ProductsController extends Controller
             $paginate = $request->input('paginate');
         }
         if ($request->has('available')) {
-            return response(Product::where('inventory_count', '>', 0)->paginate($paginate));
+            return Product::where('inventory_count', '>', 0)->paginate($paginate);
         } else {
             return Product::paginate($paginate);
         }
@@ -58,14 +58,19 @@ class ProductsController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Attempts to purchase specified resource.
      *
-     * @param  \Illuminate\Http\Request $request
      * @param  \App\Product $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Product $product)
+    public function purchase(Product $product)
     {
-        //
+        if ($product->inventory_count == 0) {
+            return response()->json(['message' => 'Product is out of stock'], 200);
+        } else {
+            $product->inventory_count--;
+            $product->save();
+            return response()->json(['message' => 'Product purchased'], 200);
+        }
     }
 }

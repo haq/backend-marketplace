@@ -11,6 +11,7 @@
 |
 */
 
-Route::apiResource('products', 'API\ProductsController')->except('store', 'destroy');
+Route::apiResource('products', 'API\ProductsController')->except('store', 'update', 'destroy');
+Route::patch('products/{product}/purchase', 'API\ProductsController@purchase')->name('products.purchase');
 
 Route::post('auth', 'Auth\AuthController@login')->name('auth');
