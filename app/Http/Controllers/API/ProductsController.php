@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\API;
 
-use Validator;
 use App\Http\Controllers\Controller;
 use App\Product;
+use Validator;
 use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ProductsController extends Controller
 {
@@ -17,17 +16,17 @@ class ProductsController extends Controller
      */
     public function __construct()
     {
-       $this->middleware('auth:api');
+        $this->middleware('auth:api');
     }
 
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
     {
-
         $validator = Validator::make($request->all(), [
             'available' => 'nullable',
             'paginate' => 'nullable|int',
@@ -41,24 +40,21 @@ class ProductsController extends Controller
             $paginate = $request->input('paginate');
         }
         if ($request->has('available')) {
-             return response(Product::where('inventory_count', '>', 0)->paginate($paginate));
+            return response(Product::where('inventory_count', '>', 0)->paginate($paginate));
         } else {
             return Product::paginate($paginate);
         }
     }
 
     /**
-     * Display the specified resource.  
+     * Display the specified resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param Product $product
+     * @return Product
      */
-    public function show(int $id)
+    public function show(Product $product)
     {
-        try { 
-            return Product::findOrFail($id);
-        } catch(ModelNotFoundException $e){
-            return response()->json(['error' => 'Not Found', 'status' => 404], 404);
-        }
+        return $product;
     }
 
     /**

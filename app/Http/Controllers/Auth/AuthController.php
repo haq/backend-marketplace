@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Tymon\JWTAuth\Exceptions\JWTException;
+use Validator;
 
 class AuthController extends Controller
 {
     /**
      * Get a JWT via given credentials.
      *
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function login(Request $request)
@@ -20,18 +20,13 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:255',
             'password' => 'required',
         ]);
-
         if ($validator->fails()) {
             return response()->json(['error' => 'Bad Request', 'status' => 400], 400);
         }
 
-        $credentials = $request->only('email', 'password');
-        try {
-            if (!$token = auth('api')->attempt($credentials)) {
-                return response()->json(['error' => 'Unauthorized', 'status' => 401], 401);
-            }
-        } catch (JWTException $e) {
-            return response()->json(['error' => 'Internal Server Error', 'status' => 500], 500);
+        $credentials = $request->only(['email', 'password']);
+        if (!$token = auth('api')->attempt($credentials)) {
+            return response()->json(['error' => 'Unauthorized', 'status' => 401], 401);
         }
         return $this->respondWithToken($token);
     }

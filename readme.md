@@ -16,8 +16,8 @@ POST /api/auth
 ```
 | Key | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `email` | `required|string|email|max:255` | Your account email. | `test@test.com` |
-| `password` | `required|string` | Your account password. | `test` |
+| `email` | `required` `string` `email` `max:255` | Your account email. | `test@test.com` |
+| `password` | `required` `string` | Your account password. | `test` |
 
 ##### Responses
 
@@ -55,9 +55,9 @@ GET /api/products
 ```
 | Parameter | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `token` | `required|string` | Your auth token. |  |
-| `page` | `nullable|int` | What page number you want. | `1` |
-| `paginate` | `nullable|int` | How many products you want to list per page. | `10` |
+| `token` | `required` `string` | Your auth token. |  |
+| `page` | `nullable` `int` | What page number you want. | `1` |
+| `paginate` | `nullable` `int` | How many products you want to list per page. | `10` |
 | `available` | `nullable` | Whether you want to exclude empty products. |  |
 
 
@@ -165,14 +165,14 @@ GET /api/products
 | :--- | :--- | :--- |
 | `current_page` | `int` | Your current page. |
 | `data` | `array` | Holds all the product objects. |
-| `first_page_url` | `string|url` | The URL of the first page. |
+| `first_page_url` | `string` `url` | The URL of the first page. |
 | `from` | `int` | From what product id does this page display form. |
 | `last_page` | `int` | The last page number that holds data. |
-| `last_page_url` | `nullable|string|url` | The URL of the last page. |
-| `next_page_url` | `nullable|string|url` | The URL of the next page. |
-| `path` | `string|url` | The API URL. |
+| `last_page_url` | `nullable` `string` `url` | The URL of the last page. |
+| `next_page_url` | `nullable` `string` `url` | The URL of the next page. |
+| `path` | `string` `url` | The API URL. |
 | `per_page` | `int` | The number of products per page. |
-| `prev_page_url` | `nullable|string|url` | The URL of the previous page. |
+| `prev_page_url` | `nullable` `string` `url` | The URL of the previous page. |
 | `to` | `int` | Up to what product id is displayed on this page. |
 | `total` | `int` | The total number of products on all pages. |
 
@@ -196,8 +196,8 @@ GET /api/products/{id}/
 ```
 | Key | Type | Description |
 | :--- | :--- | :--- |
-| `id` | `'required|int'` | The ID of the product you want to get. |
-| `token` | `required|string` | Your auth token. |
+| `id` | `required` `int` | The ID of the product you want to get. |
+| `token` | `required` `string` | Your auth token. |
 
 ##### Responses
 
@@ -214,12 +214,12 @@ GET /api/products/{id}/
 ```
 | Key | Type | Description |
 | :--- | :--- | :--- |
-| `id` | `int` | THe product id. |
+| `id` | `int` | The product id. |
 | `title` | `string` | The product title. |
 | `price` | `float` | The product price.|
 | `inventory_count` | `int` | The inventory count of the product.|
-| `created_at` | `string|date` | The date the product was added to inventory. |
-| `updated_at` | `string|date` | THe date the product was last updated..|
+| `created_at` | `string` `date` | The date the product was added to inventory. |
+| `updated_at` | `string` `date` | THe date the product was last updated..|
 
 ###### Fail
 ```json
