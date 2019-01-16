@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Validator;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
@@ -13,7 +15,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware(['api', 'auth:api'])->except('login');
+        $this->middleware('auth:api')->except('login');
     }
 
     /**
@@ -21,10 +23,22 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login()
+    public function login(Request $request)
     {
-        $credentials = request(['email', 'password']);
-        if (!$token = auth('api')->attempt($credentials)) {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required',
+            'password' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $credential = [
+            'email' => $request->input('email'),
+            'password' => $request->input('password'),
+        ];
+        if (!$token = auth('api')->attempt($credential)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
         return $this->respondWithToken($token);
@@ -35,7 +49,7 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function logout()
+    public function logout(Request $request)
     {
         auth('api')->logout();
         return response()->json(['message' => 'Successfully logged out']);
@@ -46,7 +60,7 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function refresh()
+    public function refresh(Request $request)
     {
         return $this->respondWithToken(auth('api')->refresh());
     }
@@ -58,7 +72,7 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function respondWithToken($token)
+    private function respondWithToken($token)
     {
         return response()->json([
             'token' => $token,

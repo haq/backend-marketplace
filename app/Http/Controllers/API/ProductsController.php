@@ -15,7 +15,7 @@ class ProductsController extends Controller
      */
     public function __construct()
     {
-        /*   $this->middleware(['auth:api']);*/
+       $this->middleware('auth:api');
     }
 
     /**
@@ -26,15 +26,11 @@ class ProductsController extends Controller
     public function index(Request $request)
     {
         $paginate = 10;
-        if (!is_null($request->paginate)) {
+        if (isset($request->paginate)) {
             $paginate = $request->paginate;
         }
         if (isset($request->available)) {
-            if ($request->available) {
-                return Product::where('inventory_count', '>', 0)->paginate($paginate);
-            } else {
-                return response(Product::paginate($paginate));
-            }
+             return response(Product::where('inventory_count', '>', 0)->paginate($paginate));
         } else {
             return response(Product::paginate($paginate));
         }
