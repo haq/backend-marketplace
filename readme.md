@@ -1,7 +1,11 @@
-[![license](https://img.shields.io/github/license/mashape/apistatus.svg) ](LICENSE)
+[![license](https://img.shields.io/github/license/mashape/apistatus.svg)](LICENSE)
+![o](https://img.shields.io/badge/laravel-v5.7.21-brightgreen.svg)
 
 # backend-marketplace
 A barebones backend of an online marketplace done for a internship challenge for Shopify.
+
+## Testing
+For testing please use `http://backend.ihaq.me`. Everything is setup you should be able to test out the API without any problems.
 
 ## Libraries
 - [Laravel](https://github.com/laravel/laravel) - Framework used for backend. Would use Vue.js for frontend.
