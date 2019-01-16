@@ -1,3 +1,5 @@
+[![license](https://img.shields.io/github/license/mashape/apistatus.svg) ](LICENSE)
+
 # backend-marketplace
 A barebones backend of an online marketplace done for a internship challenge for Shopify.
 
@@ -14,10 +16,10 @@ A barebones backend of an online marketplace done for a internship challenge for
 ```http
 POST /api/auth/login
 ```
-| Key | Type | Description |
-| :--- | :--- | :--- |
-| `email` | `string` | Your account email. |
-| `password` | `string` | Your account password |
+| Key | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `email` | `string` | Your account email. | test@test.com |
+| `password` | `string` | Your account password. | test |
 
 ##### Responses
 
@@ -87,7 +89,7 @@ POST /api/auth/refresh
 ```http
 POST /api/auth/logout
 ```
-| Parameter | Type | Description |
+| Key | Type | Description |
 | :--- | :--- | :--- |
 | `token` | `string` | Your access token. |
 
