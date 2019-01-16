@@ -192,7 +192,7 @@ GET /api/products
 #### Single Product
 
 ```http
-POST /api/products/{id}/
+GET /api/products/{id}/
 ```
 | Key | Type | Description |
 | :--- | :--- | :--- |
