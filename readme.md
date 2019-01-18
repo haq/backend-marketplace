@@ -15,6 +15,18 @@ For testing please use `http://backend.ihaq.me`. Everything is setup you should 
 This API is barebones it will be missing features and security. You will need to create a cart to purchase products.
 Every API call requires a access token so add **Authorization: Bearer {token}** to your headers.
 
+### Table of Contents
+1. [Authentication](#authentication)
+2. [Products](#products)
+    1. [All Products](#all-products)
+    2. [Single Product](#single-product)
+3. [Carts](#carts)
+    1. [Single Cart](#single-cart)
+    2. [Creating](#creating)
+    3. [Adding](#adding)
+    4. [Removing](#removing)
+    5. [Completing](#completing)
+
 ### Authentication
 ```http
 POST /api/auth
@@ -420,7 +432,7 @@ PATCH /api/carts/{shoppingcart}/remove
 | :--- | :--- | :--- |
 | `message` | `string` | Status message. |
 
-#### Completing / Checkout
+#### Completing
 ```http
 PATCH /api/carts/{shoppingcart}/complete
 ```
