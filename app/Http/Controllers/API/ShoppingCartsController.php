@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ShoppingCart as ShoppingCartResource;
 use App\Product;
 use App\ShoppingCart;
 use Illuminate\Http\Request;
@@ -39,10 +40,9 @@ class ShoppingCartsController extends Controller
      * @param ShoppingCart $shoppingcart
      * @return mixed
      */
-    // TODO: return proper info
     public function show(ShoppingCart $shoppingcart)
     {
-        return $shoppingcart->products()->getResults();
+        return new ShoppingCartResource($shoppingcart);
     }
 
     /**

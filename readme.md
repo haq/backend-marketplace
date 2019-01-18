@@ -247,17 +247,47 @@ GET /api/carts/{shoppingcart}
 ###### Success
 ```json
 {
- 
+    "id": 2,
+    "completed": true,
+    "products": [
+        {
+            "id": 2,
+            "title": "reprehenderit",
+            "price": 37799,
+            "inventory_count": 5,
+            "created_at": "2019-01-17 21:56:13",
+            "updated_at": "2019-01-18 00:52:04"
+        },
+        {
+            "id": 3,
+            "title": "in",
+            "price": 815046,
+            "inventory_count": 5,
+            "created_at": "2019-01-17 21:56:13",
+            "updated_at": "2019-01-18 00:52:04"
+        }
+    ],
+    "created_at": "2019-01-17 23:17:17",
+    "updated_at": "2019-01-18 00:52:04"
 }
 ```
 | Key | Type | Description |
 | :--- | :--- | :--- |
-| `message` | `string` | The product id. |
+| `id` | `int` | The shopping cart id. |
+| `completed` | `boolean` | Whether the shopping cart has been completed or not. |
+| `products` | `array` | Array that holds all the data for the products int he shopping cart. |
+| `created_at` | `string` `date` | The date the shopping cart was created.  |
+| `updated_at` | `string` `date` | The date the shopping cart was last updated. |
 
 ###### Fail
 ```json
 {
-
+    "message": "Not Found"
+}
+```
+```json
+{
+    "message": "Unauthorized"
 }
 ``` 
 | Key | Type | Description |
@@ -333,6 +363,11 @@ PATCH /api/carts/{shoppingcart}/add
 ```json
 {
     "message": "This shopping cart has already been completed."
+}
+```
+```json
+{
+    "message": "Not Found"
 }
 ```
 ```json

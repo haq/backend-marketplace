@@ -16,6 +16,10 @@ class Product extends Model
         'title', 'price', 'inventory_count',
     ];
 
+    protected $hidden = [
+        'pivot'
+    ];
+
     public function shoppingcarts()
     {
         return $this->belongsToMany('App\ShoppingCart', 'product_shoppingcart', 'product_id', 'shoppingcart_id');
