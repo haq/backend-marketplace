@@ -32,7 +32,7 @@ class ProductsController extends Controller
             'paginate' => 'nullable|int',
         ]);
         if ($validator->fails()) {
-            return response()->json(['error' => 'Bad Request'], 400);
+            return response()->json(['message' => 'Bad Request'], 400);
         }
 
         $paginate = 10;
@@ -55,22 +55,5 @@ class ProductsController extends Controller
     public function show(Product $product)
     {
         return $product;
-    }
-
-    /**
-     * Attempts to purchase specified resource.
-     *
-     * @param  \App\Product $product
-     * @return \Illuminate\Http\Response
-     */
-    public function purchase(Product $product)
-    {
-        if ($product->inventory_count == 0) {
-            return response()->json(['message' => 'Product is out of stock'], 200);
-        } else {
-            $product->inventory_count--;
-            $product->save();
-            return response()->json(['message' => 'Product purchased'], 200);
-        }
     }
 }

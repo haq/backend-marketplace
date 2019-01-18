@@ -17,16 +17,16 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'email' => 'required|string|email|max:255',
-            'password' => 'required',
+            'email' => 'required|string|email',
+            'password' => 'required|string'
         ]);
         if ($validator->fails()) {
-            return response()->json(['error' => 'Bad Request'], 400);
+            return response()->json(['message' => 'Bad Request'], 400);
         }
 
         $credentials = $request->only(['email', 'password']);
         if (!$token = auth('api')->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['message' => 'Unauthorized'], 401);
         }
         return $this->respondWithToken($token);
     }

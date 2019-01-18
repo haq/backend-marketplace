@@ -12,15 +12,16 @@ For testing please use `http://backend.ihaq.me`. Everything is setup you should 
 - [jwt-auth](https://github.com/tymondesigns/jwt-auth) - Used for JWT based API authentication.
 
 ## API
+This API is barebones it will be missing features and security. You will need to create a cart to purchase products.
+Every API call requires a access token so add **Authorization: Bearer {token}** to your headers.
 
 ### Authentication
-
 ```http
 POST /api/auth
 ```
 | Key | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `email` | `required` `string` `email` `max:255` | Your account email. | `test@test.com` |
+| `email` | `required` `string` `email` | Your account email. | `test@test.com` |
 | `password` | `required` `string` | Your account password. | `test` |
 
 ##### Responses
@@ -42,12 +43,12 @@ POST /api/auth
 ###### Fail
 ```json
 {
-    "error": "Unauthorized"
+    "message": "Unauthorized"
 }
 ```
 | Key | Type | Description |
 | :--- | :--- | :--- |
-| `error` | `string` | Access status message. |
+| `message` | `string` | Status message. |
 
 ### Products
 
@@ -55,13 +56,11 @@ POST /api/auth
 ```http
 GET /api/products
 ```
-| Parameter | Type | Description | Default |
+| Key | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `token` | `required` `string` | Your auth token. |  |
 | `page` | `nullable` `int` | What page number you want. | `1` |
 | `paginate` | `nullable` `int` | How many products you want to list per page. | `10` |
-| `available` | `nullable` | Whether you want to exclude empty products. |  |
-
+| `available` | `nullable` | Whether you want to exclude out of stock products. |  |
 
 ##### Responses
 
@@ -181,24 +180,20 @@ GET /api/products
 ###### Fail
 ```json
 {
-    "error": "Unauthorized",
-    "status": 401
+    "message": "Unauthorized"
 }
 ```
 | Key | Type | Description |
 | :--- | :--- | :--- |
-| `error` | `string` | Access status message. |
-| `status` | `int` | The status code. |
+| `message` | `string` | Status message. |
 
 #### Single Product
-
 ```http
-GET /api/products/{id}/
+GET /api/products/{id}
 ```
 | Key | Type | Description |
 | :--- | :--- | :--- |
-| `id` | `required` `int` | The ID of the product you want to get. |
-| `token` | `required` `string` | Your auth token. |
+| `id` | `required` `int` | The ID of the product you want. |
 
 ##### Responses
 
@@ -220,102 +215,228 @@ GET /api/products/{id}/
 | `price` | `float` | The product price.|
 | `inventory_count` | `int` | The inventory count of the product.|
 | `created_at` | `string` `date` | The date the product was added to inventory. |
-| `updated_at` | `string` `date` | THe date the product was last updated..|
+| `updated_at` | `string` `date` | The date the product was last updated.|
 
 ###### Fail
 ```json
 {
-    "error": "Not Found"
+    "message": "Not Found"
 }
 ```
-OR
 ```json
 {
-    "error": "Unauthorized"
+    "message": "Unauthorized"
 }
 ``` 
 | Key | Type | Description |
 | :--- | :--- | :--- |
-| `error` | `string` | Access status message. |
+| `message` | `string` | Status message. |
 
-##### Responses
+### Carts
 
-###### Success
-```json
-{
-    "id": 2,
-    "title": "ipsam",
-    "price": 751727,
-    "inventory_count": 8,
-    "created_at": "2019-01-16 03:15:58",
-    "updated_at": "2019-01-16 03:15:58"
-}
-```
-| Key | Type | Description |
-| :--- | :--- | :--- |
-| `id` | `int` | The product id. |
-| `title` | `string` | The product title. |
-| `price` | `float` | The product price.|
-| `inventory_count` | `int` | The inventory count of the product.|
-| `created_at` | `string` `date` | The date the product was added to inventory. |
-| `updated_at` | `string` `date` | THe date the product was last updated..|
-
-###### Fail
-```json
-{
-    "error": "Not Found"
-}
-```
-OR
-```json
-{
-    "error": "Unauthorized"
-}
-``` 
-| Key | Type | Description |
-| :--- | :--- | :--- |
-| `error` | `string` | Access status message. |
-
-#### Purchase Product
-
+#### Single Cart
 ```http
-PATCH /api/products/{id}/purchase
+GET /api/carts/{shoppingcart}
 ```
 | Key | Type | Description |
 | :--- | :--- | :--- |
-| `id` | `required` `int` | The ID of the product you want to get. |
-| `token` | `required` `string` | Your auth token. |
+| `shoppingcart` | `required` `int` | The ID of the cart you want. |
 
 ##### Responses
 
 ###### Success
 ```json
 {
-    "message": "Product is out of stock"
-}
-```
-OR 
-```json
-{
-    "message": "Product purchased"
+ 
 }
 ```
 | Key | Type | Description |
 | :--- | :--- | :--- |
-| `message` | `string` | The response. |
+| `message` | `string` | The product id. |
 
 ###### Fail
 ```json
 {
-    "error": "Not Found"
-}
-```
-OR
-```json
-{
-    "error": "Unauthorized"
+
 }
 ``` 
 | Key | Type | Description |
 | :--- | :--- | :--- |
-| `error` | `string` | Access status message. |
+| `message` | `string` | Status message. |
+
+#### Creating
+```http
+POST /api/carts
+```
+
+##### Responses
+
+###### Success
+```json
+{
+    "message": "New shopping cart created.",
+    "id": 4
+}
+```
+| Key | Type | Description |
+| :--- | :--- | :--- |
+| `message` | `string` | Status message. |
+| `id` | `int` | The cart id. |
+
+###### Fail
+```json
+{
+    "message": "Unauthorized"
+}
+``` 
+| Key | Type | Description |
+| :--- | :--- | :--- |
+| `message` | `string` | Status message. |
+
+#### Adding
+```http
+PATCH /api/carts/{shoppingcart}/add
+```
+| Key | Type | Description |
+| :--- | :--- | :--- |
+| `shoppingcart` | `required` `int` | The ID of the cart you want. |
+| `product_id` | `required` `int` | The ID of the product you want to add to the cart. |
+
+##### Responses
+
+###### Success
+```json
+{
+    "message": "Product added to cart."
+}
+```
+| Key | Type | Description |
+| :--- | :--- | :--- |
+| `message` | `string` | Status message. |
+
+###### Fail
+```json
+{
+    "message": "This cart already contains this item."
+}
+```
+```json
+{
+    "message": "This shopping cart has already been completed."
+}
+```
+```json
+{
+    "message": "Product is out of stock."
+}
+```
+```json
+{
+    "message": "This shopping cart has already been completed."
+}
+```
+```json
+{
+    "message": "Unauthorized"
+}
+``` 
+| Key | Type | Description |
+| :--- | :--- | :--- |
+| `message` | `string` | Status message. |
+
+#### Removing
+```http
+PATCH /api/carts/{shoppingcart}/remove
+```
+| Key | Type | Description |
+| :--- | :--- | :--- |
+| `shoppingcart` | `required` `int` | The ID of the cart you want. |
+| `product_id` | `required` `int` | The ID of the product you want to remove from the cart. |
+
+##### Responses
+
+###### Success
+```json
+{
+    "message": "Product removed."
+}
+```
+| Key | Type | Description |
+| :--- | :--- | :--- |
+| `message` | `string` | Status message. |
+
+###### Fail
+```json
+{
+    "message": "This cart does not contain this product."
+}
+```
+```json
+{
+    "message": "Not Found"
+}
+```
+```json
+{
+    "message": "Unauthorized"
+}
+``` 
+| Key | Type | Description |
+| :--- | :--- | :--- |
+| `message` | `string` | Status message. |
+
+#### Completing / Checkout
+```http
+PATCH /api/carts/{shoppingcart}/complete
+```
+| Key | Type | Description |
+| :--- | :--- | :--- |
+| `shoppingcart` | `required` `int` | The ID of the cart you want. |
+
+##### Responses
+
+###### Success
+```json
+{
+    "message": "Shopping cart completed.",
+    "amount": 3,
+    "price": 1048474
+}
+```
+| Key | Type | Description |
+| :--- | :--- | :--- |
+| `message` | `string` | Status message. |
+| `amount` | `int` | The amount of products in the cart at the time of completion. |
+| `price` | `float` | The net price of the shopping cart. |
+
+###### Fail
+```json
+{
+    "message": "This product is out of stock.",
+    "id": 1
+}
+```
+```json
+{
+    "message": "This shopping cart is empty."
+}
+```
+```json
+{
+    "message": "This shopping cart has already been completed."
+}
+```
+```json
+{
+    "message": "Not Found"
+}
+```
+```json
+{
+    "message": "Unauthorized"
+}
+``` 
+| Key | Type | Description |
+| :--- | :--- | :--- |
+| `message` | `string` | Status message. |
+| `id` | `nullable` `int` | The product id. |
