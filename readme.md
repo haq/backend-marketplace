@@ -13,6 +13,9 @@ This API is barebones it will be missing features and security. You will need to
 Every API call requires a access token so add **Authorization: Bearer {token}** to your headers.
 
 ### Table of Contents
+<details>
+  <summary>Click to expand!</summary>
+    
 1. [Authentication](#authentication)
 2. [Products](#products)
     1. [All Products](#all-products)
@@ -23,6 +26,8 @@ Every API call requires a access token so add **Authorization: Bearer {token}** 
     3. [Adding](#adding)
     4. [Removing](#removing)
     5. [Completing](#completing)
+    
+</details>
 
 ### Authentication
 ```http
