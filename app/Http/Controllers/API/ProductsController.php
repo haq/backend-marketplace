@@ -37,8 +37,9 @@ class ProductsController extends Controller
 
         $paginate = 10;
         if ($request->has('paginate')) {
-            $paginate = $request->input('paginate');
+            $paginate = $request->paginate;
         }
+        
         if ($request->has('available')) {
             return Product::where('inventory_count', '>', 0)->paginate($paginate);
         } else {

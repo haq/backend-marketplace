@@ -16,6 +16,7 @@ class ShoppingCart extends JsonResource
     {
         return [
             'id' => $this->id,
+            'user_id' => $this->user_id,
             'completed' => (boolean)$this->completed,
             'products' => $this->products()->get(),
             'created_at' => $this->created_at->toDateTimeString(),

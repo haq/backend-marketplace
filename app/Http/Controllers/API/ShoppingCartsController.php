@@ -24,13 +24,23 @@ class ShoppingCartsController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function create()
+    public function create(Request $request)
     {
-        $cart = new ShoppingCart();
-        $cart->save();
+
+        // TODO: check if a non completed shopping cart already exists from this user
+        $cart = App\ShoppingCart::firstOrCreate(
+            [
+                'user_id' => $request->user()->id,
+                'completed' => true
+            ],
+            [
+                'user_id' => $request->user()->id
+            ]
+        ); 
+
         return response()->json([
-            'message' => 'New shopping cart created.',
-            'id' => $cart->id
+            'message' => 'Shopping Cart',
+            'id' => 1
         ], 200);
     }
 
@@ -58,26 +68,26 @@ class ShoppingCartsController extends Controller
             'product_id' => 'required|int'
         ]);
         if ($validator->fails()) {
-            return response()->json(['message' => 'Bad Request'], 400);
+            return $this::jsonResponse(['message' => 'Bad Request'], 400);
         }
 
         // checking if the cart is already completed
         if ($shoppingcart->completed) {
-            return response()->json(['message' => 'This shopping cart has already been completed.'], 400);
+            return $this::jsonResponse(['message' => 'Shopping Cart already completed.'], 409);
         }
 
         // checking if the product exists
-        $product = Product::findOrFail($request->input('product_id'));
+        $product = Product::findOrFail($request->product_id);
 
         // checking if the product is out of stock
         if ($product->inventory_count == 0) {
-            return response()->json(['message' => 'Product is out of stock.'], 400);
+            return $this::jsonResponse(['message' => 'Product out of stock.'], 409);
         }
 
         // checking if this cart already contains this product
         foreach ($shoppingcart->products()->get() as $prod) {
             if ($prod->id == $product->id) {
-                return response()->json(['message' => 'This cart already contains this product.'], 400);
+                return $this::jsonResponse(['message' => 'This cart already contains this product.'], 409);
             }
         }
 
@@ -85,7 +95,7 @@ class ShoppingCartsController extends Controller
         $shoppingcart->products()->attach($product->id);
         $shoppingcart->save();
 
-        return response()->json(['message' => 'Product added to cart.'], 200);
+        return $this::jsonResponse(['message' => 'Product added to cart.'], 200);
     }
 
     /**
@@ -101,7 +111,7 @@ class ShoppingCartsController extends Controller
             'product_id' => 'required|int'
         ]);
         if ($validator->fails()) {
-            return response()->json(['message' => 'Bad Request'], 400);
+            return $this::jsonResponse(['message' => 'Bad Request'], 400);
         }
 
         // checking if the product exists
@@ -113,11 +123,11 @@ class ShoppingCartsController extends Controller
                 $shoppingcart->products()->detach($product->id);
                 $shoppingcart->save();
 
-                return response()->json(['message' => 'Product removed.'], 200);
+                return $this::jsonResponse(['message' => 'Product removed.'], 200);
             }
         }
 
-        return response()->json(['message' => 'This cart does not contain this product.'], 300);
+        return $this::jsonResponse(['message' => 'This cart does not contain this product.'], 300);
     }
 
     /**
@@ -130,21 +140,21 @@ class ShoppingCartsController extends Controller
     {
         // checking if the cart has already been completed
         if ($shoppingcart->completed) {
-            return response()->json(['message' => 'This shopping cart has already been completed.'], 400);
+            return $this::jsonResponse(['message' => 'This shopping cart has already been completed.'], 400);
         }
 
         $count = $shoppingcart->products()->count();
 
         // checking the cart is empty
         if ($count == 0) {
-            return response()->json(['message' => 'This shopping cart is empty.'], 400);
+            return $this::jsonResponse(['message' => 'This shopping cart is empty.'], 400);
         }
 
         $price = 0;
         foreach ($shoppingcart->products()->get() as $product) {
 
             if ($product->inventory_count == 0) {
-                return response()->json([
+                return $this::jsonResponse([
                     'message' => 'This product is out of stock.',
                     'id' => $product->id
                 ], 400);
