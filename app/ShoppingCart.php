@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 class ShoppingCart extends Model
 {
     protected $fillable = [
-        'completed',
+        'user_id', 'completed'
     ];
 
     public function user()

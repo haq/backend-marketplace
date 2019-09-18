@@ -28,19 +28,15 @@ class ShoppingCartsController extends Controller
     {
 
         // TODO: check if a non completed shopping cart already exists from this user
-        $cart = App\ShoppingCart::firstOrCreate(
+        $cart = ShoppingCart::firstOrCreate(
             [
                 'user_id' => $request->user()->id,
-                'completed' => true
-            ],
-            [
-                'user_id' => $request->user()->id
             ]
         ); 
 
         return response()->json([
             'message' => 'Shopping Cart',
-            'id' => 1
+            'id' => $cart->id
         ], 200);
     }
 
@@ -69,6 +65,11 @@ class ShoppingCartsController extends Controller
         ]);
         if ($validator->fails()) {
             return $this::jsonResponse(['message' => 'Bad Request'], 400);
+        }
+        
+        // this shopping cart does not belong to this user
+        if($shoppingcart->user_id !== $request->user()->id){
+            return $this::jsonResponse('403 Forbidden', 403);
         }
 
         // checking if the cart is already completed
@@ -114,11 +115,17 @@ class ShoppingCartsController extends Controller
             return $this::jsonResponse(['message' => 'Bad Request'], 400);
         }
 
+        // this shopping cart does not belong to this user
+        if($shoppingcart->user_id !== $request->user()->id){
+            return $this::jsonResponse('403 Forbidden', 403);
+        }
+
         // checking if the product exists
-        $product = Product::findOrFail($request->input('product_id'));
+        $product = Product::findOrFail($request->product_id);
 
         foreach ($shoppingcart->products()->get() as $prod) {
             if ($prod->id == $product->id) {
+                
                 // removing product from the cart
                 $shoppingcart->products()->detach($product->id);
                 $shoppingcart->save();
@@ -136,8 +143,13 @@ class ShoppingCartsController extends Controller
      * @param ShoppingCart $shoppingcart
      * @return \Illuminate\Http\JsonResponse
      */
-    public function complete(ShoppingCart $shoppingcart)
+    public function complete(ShoppingCart $shoppingcart, Request $request)
     {
+         // this shopping cart does not belong to this user
+         if($shoppingcart->user_id !== $request->user()->id){
+            return $this::jsonResponse('403 Forbidden', 403);
+        }
+        
         // checking if the cart has already been completed
         if ($shoppingcart->completed) {
             return $this::jsonResponse(['message' => 'This shopping cart has already been completed.'], 400);
