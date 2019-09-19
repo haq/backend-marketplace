@@ -48,6 +48,36 @@ class ProductsController extends Controller
     }
 
     /**
+     * Creating a new product.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function create(Request $request)
+    { 
+        // checking if all the info is valid
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string',
+            'price' => 'required|float',
+            'inventory_count' => 'required|int'
+        ]);
+        if ($validator->fails()) {
+            return $this::jsonResponse(['message' => 'Bad Request'], 400);
+        }
+
+        // creating the new product
+        $product = new Product();
+        $product->title = $request->title;
+        $product->price = $request->price;
+        $product->inventory_count = $request->inventory_count;
+        $product->save();
+
+        return response()->json([
+            'message' => 'Product Created',
+            'id' => $product->id
+        ], 200);
+    }
+
+    /**
      * Display the specified resource.
      *
      * @param Product $product
@@ -58,6 +88,12 @@ class ProductsController extends Controller
         return $product;
     }
 
+    /**
+     * Deleting the specified resource.
+     *
+     * @param Product $product
+     * @return Product
+     */
     public function delete(Product $product)
     {        
         $product->delete();
