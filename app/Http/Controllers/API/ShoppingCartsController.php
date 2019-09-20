@@ -28,15 +28,15 @@ class ShoppingCartsController extends Controller
      */
     public function create(Request $request)
     {
-        // TODO: check if a non completed shopping cart already exists from this user
         $cart = ShoppingCart::firstOrCreate(
             [
-                'user_id' => $request->user()->id
+                'user_id' => $request->user()->id,
+                'completed' => false
             ]
         );
 
         return response()->json([
-            'id' => $cart->id
+            'cart_id' => $cart->id
         ], 200);
     }
 
