@@ -4,8 +4,10 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Product;
-use Validator;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
 
 class ProductsController extends Controller
 {
@@ -23,7 +25,7 @@ class ProductsController extends Controller
      * Display a listing of the resource.
      *
      * @param Request $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index(Request $request)
     {
@@ -32,14 +34,16 @@ class ProductsController extends Controller
             'paginate' => 'nullable|int',
         ]);
         if ($validator->fails()) {
-            return response()->json(['message' => 'Bad Request'], 400);
+            return response()->json([
+                'message' => '400 Bad Request'
+            ], 400);
         }
 
         $paginate = 10;
         if ($request->has('paginate')) {
             $paginate = $request->paginate;
         }
-        
+
         if ($request->has('available')) {
             return Product::where('inventory_count', '>', 0)->paginate($paginate);
         } else {
@@ -50,18 +54,21 @@ class ProductsController extends Controller
     /**
      * Creating a new product.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request $request
+     * @return JsonResponse
      */
     public function create(Request $request)
-    { 
+    {
         // checking if all the info is valid
         $validator = Validator::make($request->all(), [
             'title' => 'required|string',
-            'price' => 'required|float',
-            'inventory_count' => 'required|int'
+            'price' => 'required|numeric',
+            'inventory_count' => 'required|integer'
         ]);
         if ($validator->fails()) {
-            return $this::jsonResponse(['message' => 'Bad Request'], 400);
+            return response()->json([
+                'message' => '400 Bad Request'
+            ], 400);
         }
 
         // creating the new product
@@ -73,7 +80,7 @@ class ProductsController extends Controller
 
         return response()->json([
             'message' => 'Product Created',
-            'id' => $product->id
+            'product_id' => $product->id
         ], 200);
     }
 
@@ -92,10 +99,14 @@ class ProductsController extends Controller
      * Deleting the specified resource.
      *
      * @param Product $product
-     * @return Product
+     * @return JsonResponse
+     * @throws \Exception
      */
     public function delete(Product $product)
-    {        
+    {
         $product->delete();
+        return response()->json([
+            'message' => 'Product Deleted'
+        ], 200);
     }
 }

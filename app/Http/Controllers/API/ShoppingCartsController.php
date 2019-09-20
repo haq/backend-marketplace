@@ -6,8 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ShoppingCart as ShoppingCartResource;
 use App\Product;
 use App\ShoppingCart;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Validator;
+use Illuminate\Support\Facades\Validator;
 
 class ShoppingCartsController extends Controller
 {
@@ -22,7 +23,8 @@ class ShoppingCartsController extends Controller
     /**
      * Creating a new shopping cart.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request $request
+     * @return JsonResponse
      */
     public function create(Request $request)
     {
@@ -31,7 +33,7 @@ class ShoppingCartsController extends Controller
             [
                 'user_id' => $request->user()->id
             ]
-        ); 
+        );
 
         return response()->json([
             'id' => $cart->id
@@ -41,38 +43,44 @@ class ShoppingCartsController extends Controller
     /**
      * Showing info about the shopping cart.
      *
-     * @param ShoppingCart $shoppingcart
+     * @param ShoppingCart $shoppingCart
      * @return mixed
      */
-    public function show(ShoppingCart $shoppingcart)
+    public function show(ShoppingCart $shoppingCart)
     {
-        return new ShoppingCartResource($shoppingcart);
+        return new ShoppingCartResource($shoppingCart);
     }
 
     /**
      * Adding a product to the shopping cart.
      *
-     * @param ShoppingCart $shoppingcart
+     * @param ShoppingCart $shoppingCart
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function add(ShoppingCart $shoppingcart, Request $request)
+    public function add(ShoppingCart $shoppingCart, Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'product_id' => 'required|int'
+            'product_id' => 'required|integer'
         ]);
         if ($validator->fails()) {
-            return $this::jsonResponse(['message' => 'Bad Request'], 400);
+            return response()->json([
+                'message' => '400 Bad Request'
+            ], 400);
         }
-        
-        // this shopping cart does not belong to this user
-        if($shoppingcart->user_id !== $request->user()->id){
-            return $this::jsonResponse('403 Forbidden', 403);
+
+        // checking if this shopping cart belongs to this user
+        if ($shoppingCart->user_id !== $request->user()->id) {
+            return response()->json([
+                '403 Forbidden'
+            ], 403);
         }
 
         // checking if the cart is already completed
-        if ($shoppingcart->completed) {
-            return $this::jsonResponse(['message' => 'Shopping Cart already completed.'], 409);
+        if ($shoppingCart->completed) {
+            return response()->json([
+                'message' => 'Shopping Cart already completed.'
+            ], 409);
         }
 
         // checking if the product exists
@@ -80,94 +88,115 @@ class ShoppingCartsController extends Controller
 
         // checking if the product is out of stock
         if ($product->inventory_count == 0) {
-            return $this::jsonResponse(['message' => 'Product out of stock.'], 409);
+            return response()->json([
+                'message' => 'Product out of stock.'
+            ], 409);
         }
 
         // checking if this cart already contains this product
-        foreach ($shoppingcart->products()->get() as $prod) {
+        foreach ($shoppingCart->products()->get() as $prod) {
             if ($prod->id == $product->id) {
-                return $this::jsonResponse(['message' => 'This cart already contains this product.'], 409);
+                return response()->json([
+                    'message' => 'This cart already contains this product.'
+                ], 409);
             }
         }
 
         // adding the product to the cart
-        $shoppingcart->products()->attach($product->id);
-        $shoppingcart->save();
+        $shoppingCart->products()->attach($product->id);
+        $shoppingCart->save();
 
-        return $this::jsonResponse(['message' => 'Product added to cart.'], 200);
+        return response()->json([
+            'message' => 'Product added to cart.'
+        ], 200);
     }
 
     /**
      * Removing product from the cart.
      *
-     * @param ShoppingCart $shoppingcart
+     * @param ShoppingCart $shoppingCart
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function remove(ShoppingCart $shoppingcart, Request $request)
+    public function remove(ShoppingCart $shoppingCart, Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'product_id' => 'required|int'
+            'product_id' => 'required|integer'
         ]);
         if ($validator->fails()) {
-            return $this::jsonResponse(['message' => 'Bad Request'], 400);
+            return response()->json([
+                'message' => '400 Bad Request'
+            ], 400);
         }
 
         // this shopping cart does not belong to this user
-        if($shoppingcart->user_id !== $request->user()->id){
-            return $this::jsonResponse('403 Forbidden', 403);
+        if ($shoppingCart->user_id !== $request->user()->id) {
+            return response()->json([
+                '403 Forbidden'
+            ], 403);
         }
 
         // checking if the product exists
         $product = Product::findOrFail($request->product_id);
 
-        foreach ($shoppingcart->products()->get() as $prod) {
+        foreach ($shoppingCart->products()->get() as $prod) {
             if ($prod->id == $product->id) {
-                
-                // removing product from the cart
-                $shoppingcart->products()->detach($product->id);
-                $shoppingcart->save();
 
-                return $this::jsonResponse(['message' => 'Product removed.'], 200);
+                // removing product from the cart
+                $shoppingCart->products()->detach($product->id);
+                $shoppingCart->save();
+
+                return response()->json([
+                    'message' => 'Product removed.'
+                ], 200);
             }
         }
 
-        return $this::jsonResponse(['message' => 'This cart does not contain this product.'], 300);
+        return response()->json([
+            'message' => 'This cart does not contain this product.'
+        ], 409);
     }
 
     /**
      * Completed the shopping cart.
      *
-     * @param ShoppingCart $shoppingcart
-     * @return \Illuminate\Http\JsonResponse
+     * @param ShoppingCart $shoppingCart
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function complete(ShoppingCart $shoppingcart, Request $request)
+    public function complete(ShoppingCart $shoppingCart, Request $request)
     {
-         // this shopping cart does not belong to this user
-         if($shoppingcart->user_id !== $request->user()->id){
-            return $this::jsonResponse('403 Forbidden', 403);
-        }
-        
-        // checking if the cart has already been completed
-        if ($shoppingcart->completed) {
-            return $this::jsonResponse(['message' => 'This shopping cart has already been completed.'], 400);
+        // this shopping cart does not belong to this user
+        if ($shoppingCart->user_id !== $request->user()->id) {
+            return response()->json([
+                '403 Forbidden'
+            ], 403);
         }
 
-        $count = $shoppingcart->products()->count();
+        // checking if the cart has already been completed
+        if ($shoppingCart->completed) {
+            return response()->json([
+                'message' => 'This shopping cart has already been completed.'
+            ], 409);
+        }
+
+        $count = $shoppingCart->products()->count();
 
         // checking the cart is empty
         if ($count == 0) {
-            return $this::jsonResponse(['message' => 'This shopping cart is empty.'], 400);
+            return response()->json([
+                'message' => 'This shopping cart is empty.'
+            ], 409);
         }
 
         $price = 0;
-        foreach ($shoppingcart->products()->get() as $product) {
+        foreach ($shoppingCart->products()->get() as $product) {
 
             if ($product->inventory_count == 0) {
-                return $this::jsonResponse([
-                    'message' => 'This product is out of stock.',
-                    'id' => $product->id
-                ], 400);
+                return response()->json([
+                    'message' => 'This product is out of stock. Please remove this product before completing.',
+                    'product_id' => $product->id
+                ], 409);
             }
 
             $price += $product->price;
@@ -177,8 +206,8 @@ class ShoppingCartsController extends Controller
             $product->save();
         }
 
-        $shoppingcart->completed = true;
-        $shoppingcart->save();
+        $shoppingCart->completed = true;
+        $shoppingCart->save();
 
         return response()->json([
             'message' => 'Shopping cart completed.',
