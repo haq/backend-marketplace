@@ -22,7 +22,7 @@ List of all the main files.
  * [Products](/database/migrations/2019_01_15_222335_create_products_table.php)
  * [ShoppingCarts](/database/migrations/2019_01_17_181938_create_shopping_carts_table.php)
  * [Products-ShoppingCarts](/database/migrations/2019_01_17_191151_create_product_shoppingcart_table.php)
-#### Seeders
+##### Seeders
  * [Users](/database/seeds/UserTableSeeder.php)
  * [Products](/database/seeds/ProductsTableSeeder.php)
   
