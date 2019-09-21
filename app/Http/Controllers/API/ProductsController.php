@@ -94,19 +94,4 @@ class ProductsController extends Controller
     {
         return $product;
     }
-
-    /**
-     * Deleting the specified resource.
-     *
-     * @param Product $product
-     * @return JsonResponse
-     * @throws \Exception
-     */
-    public function delete(Product $product)
-    {
-        $product->delete();
-        return response()->json([
-            'message' => 'Product Deleted'
-        ], 200);
-    }
 }

@@ -16,10 +16,7 @@ class CreateProductShoppingcartTable extends Migration
         Schema::create('product_shoppingcart', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->integer('product_id')->unsigned();
-
             $table->integer('shoppingcart_id')->unsigned();
-            $table->foreign('shoppingcart_id')->references('id')->on('shopping_carts')->onDelete('cascade');
-
         });
     }
 

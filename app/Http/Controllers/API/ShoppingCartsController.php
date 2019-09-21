@@ -52,7 +52,7 @@ class ShoppingCartsController extends Controller
     {
         if ($shoppingCart->user_id !== $request->user()->id) {
             return response()->json([
-                '403 Forbidden'
+                'message' => '403 Forbidden'
             ], 403);
         }
 
@@ -80,7 +80,7 @@ class ShoppingCartsController extends Controller
         // checking if this shopping cart belongs to this user
         if ($shoppingCart->user_id !== $request->user()->id) {
             return response()->json([
-                '403 Forbidden'
+                'message' => '403 Forbidden'
             ], 403);
         }
 
@@ -140,7 +140,7 @@ class ShoppingCartsController extends Controller
         // this shopping cart does not belong to this user
         if ($shoppingCart->user_id !== $request->user()->id) {
             return response()->json([
-                '403 Forbidden'
+                'message' => '403 Forbidden'
             ], 403);
         }
 
