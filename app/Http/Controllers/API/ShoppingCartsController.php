@@ -45,10 +45,17 @@ class ShoppingCartsController extends Controller
      * Showing info about the shopping cart.
      *
      * @param ShoppingCart $shoppingCart
+     * @param Request $request
      * @return mixed
      */
-    public function show(ShoppingCart $shoppingCart)
+    public function show(ShoppingCart $shoppingCart, Request $request)
     {
+        if ($shoppingCart->user_id !== $request->user()->id) {
+            return response()->json([
+                '403 Forbidden'
+            ], 403);
+        }
+
         return new ShoppingCartResource($shoppingCart);
     }
 
