@@ -19,8 +19,7 @@ class ShoppingCart extends Model
     {
         return $this->belongsTo('App\User');
     }
-
-    // TODO: might need to change to hasMany
+    
     public function products()
     {
         return $this->belongsToMany('App\Product', 'product_shoppingcart', 'shoppingcart_id', 'product_id');

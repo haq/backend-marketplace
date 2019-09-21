@@ -11,7 +11,7 @@
 |
 */
 
-// prodcts
+// products
 Route::get('products', 'API\ProductsController@index')->name('products.index');
 Route::post('products', 'API\ProductsController@create')->name('products.create');
 Route::get('products/{product}', 'API\ProductsController@show')->name('products.show');
