@@ -36,8 +36,9 @@ class ShoppingCartsController extends Controller
         );
 
         return response()->json([
+            'message' => 'Cart created.',
             'cart_id' => $cart->id
-        ], 200);
+        ], 201);
     }
 
     /**
@@ -169,7 +170,7 @@ class ShoppingCartsController extends Controller
         // this shopping cart does not belong to this user
         if ($shoppingCart->user_id !== $request->user()->id) {
             return response()->json([
-                '403 Forbidden'
+                'message' => '403 Forbidden'
             ], 403);
         }
 

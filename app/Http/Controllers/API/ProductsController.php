@@ -81,7 +81,7 @@ class ProductsController extends Controller
         return response()->json([
             'message' => 'Product Created',
             'product_id' => $product->id
-        ], 200);
+        ], 201);
     }
 
     /**
