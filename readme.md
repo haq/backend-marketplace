@@ -12,7 +12,7 @@ List of all the main files.
 | [User](app/User.php)  | [Auth](app/Http/Controllers/Auth/AuthController.php)  | [API](/routes/api.php) | [Users](/database/migrations/2014_10_12_000000_create_users_table.php) | [Users](/database/seeds/UserTableSeeder.php) |
 | [Product](app/Product.php)  | [Products](app/Http/Controllers/API/ProductsController.php)  | | [Products](/database/migrations/2019_01_15_222335_create_products_table.php) | [Products](/database/seeds/ProductsTableSeeder.php) |
 | [ShoppingCart](app/ShoppingCart.php)  | [ShoppingCarts](app/Http/Controllers/API/ShoppingCartsController.php)  | | [ShoppingCarts](/database/migrations/2019_01_17_181938_create_shopping_carts_table.php) | |
-| [Product](app/Product.php) | | | [Products-ShoppingCarts](/database/migrations/2019_01_17_191151_create_product_shoppingcart_table.php) | |
+| | | | [Products-ShoppingCarts](/database/migrations/2019_01_17_191151_create_product_shoppingcart_table.php) | |
 
 ## Libraries
 - [Laravel](https://github.com/laravel/laravel) - Framework used for backend.
