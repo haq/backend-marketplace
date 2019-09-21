@@ -9,4 +9,4 @@ A barebones backend of an online marketplace done for a internship challenge for
 - [jwt-auth](https://github.com/tymondesigns/jwt-auth) - Used for JWT based API authentication.
 
 ## API
-[Documentation](https://documenter.getpostman.com/view/4241142/SVmyQxLF?version=latest#e4f23414-4843-4b8f-a668-9225ae934e04)
+[Documentation](https://documenter.getpostman.com/view/4241142/SVmyQxLF?version=latest)
